@@ -10,17 +10,15 @@ using namespace std;
 LinkedList UserList;
 /***********************************************************************************************************************/
 
-
 void createLinkedList(){ //Function to create and initialize linked list with users data read from the all-users.in file.
     string line;
-    ifstream myFile ("D:\\C++\\Social Network\\all-users.in");
+    ifstream myFile ("../all-users.in");
     if (myFile.is_open())
     {
         while ( getline (myFile,line) )
         {
             string str[3];
             int j=0;
-            //cout << line << '\n';
             for(int i=0; i<line.size(); i++) {
                 if(line[i]==','){
                     i+=2;
@@ -85,8 +83,8 @@ int main() {
                     break;
                 }
                 else{
-                        cout<<"Invalid choice!"<<endl;
-                        continue;
+                    cout<<"Invalid choice!"<<endl;
+                    continue;
                 }
             }
         }else{

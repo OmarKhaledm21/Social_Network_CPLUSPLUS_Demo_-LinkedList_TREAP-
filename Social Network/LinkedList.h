@@ -27,34 +27,7 @@ public:
         count = 0;
     }
 
-    FriendsBST createFriendList(string username,FriendsBST& myList){
-        string line2;
-        ifstream myFile2 ("D:\\C++\\Social Network\\all-users-relations.in");
-        if (myFile2.is_open())
-        {
-            while ( getline (myFile2,line2) )
-            {
-                string str[2];
-                int j=0;
-                //cout << line2 << '\n';
-                for(int i=0; i<line2.size(); i++) {
-                    if(line2[i]==','){
-                        i+=2;
-                        j++;
-                    }
-                    str[j]+=line2[i];
-                }
-                if(str[0]==username) {
-                    UserInfo *temp = new UserInfo(this->search(str[1]));
-                    myList.Add(str[1], temp);
-                }
-            }
-            myFile2.close();
-        }else {
-            cout << "Unable to open file";
-        }
-        return myList;
-    }
+
 
     bool isEmpty()const {
         return head == nullptr;
@@ -121,8 +94,6 @@ public:
             cout << "Item is not found!" << endl;
         }
     }
-
-//UNDER CONST
 
     UserInfo& search(string username) {
         node* current;
@@ -222,8 +193,8 @@ public:
         }
 
         if(found_target && found) {
-            current->myTree.Remove(newFriends->info.getUsername());
-            newFriends->myTree.Remove(current->info.getUsername());
+            current->myTree.Remove(newFriends->info.getUsername(),current->info);
+            newFriends->myTree.Remove(current->info.getUsername(),newFriends->info);
             cout << "User removed from friends list\n";
         }else {
             cout << "This user is not in your friends list\n";
@@ -263,13 +234,15 @@ public:
                 current = current->link;
             }
         }
+
         if(found){
-            current->myTree.printInOrder();
-        }else{
-            cout<<"Could not find any friends!  :(\n";
+            if(current->myTree.isEmpty()){
+                cout<<"Could not find any friends!  :(\n";
+            }else {
+                current->myTree.levelorder_newline();
+            }
         }
     }
-
 
     void push_back(const UserInfo& newItem) {
         node* newNode = new node;
@@ -286,16 +259,14 @@ public:
             count++;
         }
 
-
         string line2;
-        ifstream myFile2 ("D:\\C++\\Social Network\\all-users-relations.in");
+        ifstream myFile2 ("../all-users-relations.in");
         if (myFile2.is_open())
         {
             while ( getline (myFile2,line2) )
             {
                 string str[2];
                 int j=0;
-                //cout << line2 << '\n';
                 for(int i=0; i<line2.size(); i++) {
                     if(line2[i]==','){
                         i+=2;
@@ -304,9 +275,8 @@ public:
                     str[j]+=line2[i];
                 }
                 if(str[0]==newNode->info.getUsername()) {
-
                     string USERS_INFO;
-                    ifstream USERS_FILE ("D:\\C++\\Social Network\\all-users.in");
+                    ifstream USERS_FILE ("../all-users.in");
                     if (USERS_FILE.is_open())
                     {
                         while ( getline (USERS_FILE, USERS_INFO) )
@@ -332,7 +302,7 @@ public:
 
                 }else if(str[1]==newNode->info.getUsername()){
                     string USERS_INFO;
-                    ifstream USERS_FILE ("D:\\C++\\Social Network\\all-users.in");
+                    ifstream USERS_FILE ("../all-users.in");
                     if (USERS_FILE.is_open())
                     {
                         while ( getline (USERS_FILE, USERS_INFO) )
