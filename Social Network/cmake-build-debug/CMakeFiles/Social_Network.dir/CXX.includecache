@@ -17,11 +17,11 @@ iostream
 -
 UserInfo.h
 D:/C++/Social Network/UserInfo.h
+FriendsBST.h
+D:/C++/Social Network/FriendsBST.h
 
 D:/C++/Social Network/UserInfo.h
 iostream
--
-string
 -
 
 D:/C++/Social Network/main.cpp

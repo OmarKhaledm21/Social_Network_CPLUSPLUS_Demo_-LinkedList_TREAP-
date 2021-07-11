@@ -5,7 +5,6 @@
 #ifndef SOCIAL_NETWORK_USERINFO_H
 #define SOCIAL_NETWORK_USERINFO_H
 #include <iostream>
-#include <string>
 
 using namespace std;
 
@@ -14,6 +13,7 @@ private:
     string username;
     string fullName;
     string emailAddress;
+
 
 public:
     UserInfo(){
@@ -35,9 +35,7 @@ public:
         return username;
     }
 
-    void createFriendList(){
 
-    }
 
     void printInfo(){
         cout<<"Full Name: "<<this->fullName<<"\nEmail Address: "<<this->emailAddress<<endl<<"Username: "<<this->username<<endl;

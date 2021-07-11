@@ -6,46 +6,13 @@
 #include "FriendsBST.h"
 using namespace std;
 
+
+/*****************LINKED LIST CONTAINING USERS DATA IS MADE GLOBAL SO AS TO BE VISIBLE IN ALL SCOPES*********************/
 LinkedList UserList;
+/***********************************************************************************************************************/
 
-void createFriendList(string username){
-    FriendsBST myList;
-    string line2;
-    ifstream myFile2 ("D:\\C++\\Social Network\\all-users-relations.in");
-    if (myFile2.is_open())
-    {
-        while ( getline (myFile2,line2) )
-        {
-            string str[2];
-            int j=0;
-            //cout << line2 << '\n';
-            for(int i=0; i<line2.size(); i++) {
-                if(line2[i]==','){
-                    i+=2;
-                    j++;
-                }
-                str[j]+=line2[i];
-            }
-            if(str[0]==username) {
-                UserInfo *temp = new UserInfo(UserList.search(str[1]));
-                myList.Add(str[1], temp);
-            }
-        }
-        myFile2.close();
-    }else {
-        cout << "Unable to open file";
-    }
 
-    cout<<"*************************************************\nYour Friends: \n";
-    myList.printInOrder();
-    cout<<"*************************************************\n";
-
-}
-
-int main() {
-
-    FriendsBST userFriends;
-
+void createLinkedList(){ //Function to create and initialize linked list with users data read from the all-users.in file.
     string line;
     ifstream myFile ("D:\\C++\\Social Network\\all-users.in");
     if (myFile.is_open())
@@ -63,20 +30,75 @@ int main() {
                 str[j]+=line[i];
             }
             UserInfo* userInfo = new UserInfo(str[0],str[1],str[2]);
-
             UserList.push_back(*userInfo);
-
-            userFriends.Add(str[0],userInfo);
         }
         myFile.close();
     }else {
         cout << "Unable to open file";
     }
+}
 
-    createFriendList("olaa100");
-    cout<<endl<<endl;
+int main() {
+
+    // Creating and initializing linked list
+    createLinkedList();
+
+    //TEST CASE TO MAKE SURE LINKED LIST WORKS CORRECTLY
     //UserList.print();
-    cout<<endl<<endl<<endl;
-    //userFriends.printInOrder();
+
+    /***************************MAIN****************************/
+    string commands="start";
+    while (commands!="exit"){
+        cout<<"Type your username to login or 'exit' to exit: ";
+        cin>>commands;
+        if(commands=="exit"){
+            break;
+        }
+        UserInfo user = UserList.search(commands);
+        string _friend;
+        if(user.getUsername()!=""){
+            int choice=0;
+            while(choice!=6) {
+                cout<<"\n**********MENU**********\n";
+                cout<<"1- Show Friend List\n2- Find User in friend list\n3- Add user as friend\n4- Remove a friends\n6- Logout"<<endl;
+                cin>>choice;
+                switch (choice) {
+                    case 1:
+                        UserList.FriendsList(commands);
+                        break;
+                    case 2:
+                        cout<<"Enter friend username: ";
+                        cin>>_friend;
+                            if(UserList.searchUserInFriendList(commands,_friend)){
+                                cout<<"User is your friend!\n";
+                            }
+                        break;
+                    case 3:
+                        cout<<"Enter friend username: ";
+                        cin>>_friend;
+                        UserList.add_Friends(commands,_friend);
+                        break;
+                    case 4:
+                        cout<<"Enter friend username: ";
+                        cin>>_friend;
+                        UserList.remove_Friends(commands,_friend);
+                        break;
+                    case 5:
+                        UserList.peopleYouMayKnow(user);
+                        //PEOPLE YOU MAY KNOW
+                        break;
+                    case 6:
+                        //LOGOUT
+                        break;
+                    default:
+                        cout<<"Invalid choice!"<<endl;
+                        break;
+                }
+            }
+        }else{
+            cout<<"User could not be found!"<<endl;
+        }
+    }
+    /**********************************************************/
     return 0;
 }
