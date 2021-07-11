@@ -13,8 +13,6 @@ private:
     string username;
     string fullName;
     string emailAddress;
-
-
 public:
     UserInfo(){
         username="";

@@ -72,14 +72,14 @@ public:
         return count;
     }
 
-    UserInfo front()const {
+    UserInfo& front()const {
         if (head != nullptr) { return head->info; }
         else { cout<<"Users List is empty!\n"; }
         UserInfo nullObj;
         return nullObj;
     }
 
-    UserInfo back()const {
+    UserInfo& back()const {
         if (tail != nullptr) { return tail->info; }
         else { cout<<"Users List is empty!\n"; }
         UserInfo nullObj;
@@ -121,6 +121,8 @@ public:
             cout << "Item is not found!" << endl;
         }
     }
+
+//UNDER CONST
 
     UserInfo& search(string username) {
         node* current;
@@ -268,16 +270,7 @@ public:
         }
     }
 
-    void push_front(const UserInfo& newItem) {
-        node* newNode;
-        newNode = new node;
-        newNode->info = newItem;
-        newNode->link = head;
-        head = newNode;
-        count++;
-        if (tail == NULL)
-            tail = newNode;
-    }
+
     void push_back(const UserInfo& newItem) {
         node* newNode = new node;
         newNode->info = newItem;
