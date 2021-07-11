@@ -33,8 +33,6 @@ public:
         return username;
     }
 
-
-
     void printInfo(){
         cout<<"Full Name: "<<this->fullName<<"\nEmail Address: "<<this->emailAddress<<endl<<"Username: "<<this->username<<endl;
     }
@@ -50,9 +48,9 @@ public:
         return *this;
     }
 
-    friend ostream& operator << (ostream& out, UserInfo b){
+    friend ostream& operator << (ostream& out, UserInfo user){
         out<<"User Info: "<<endl;
-        out<<"Full Name: "<<b.fullName<<"\nEmail Address: "<<b.emailAddress<<endl<<"Username: "<<b.username<<endl<<endl;
+        out << "Full Name: " << user.fullName << "\nEmail Address: " << user.emailAddress << endl << "Username: " << user.username << endl << endl;
         return out;
     }
 };

@@ -10,24 +10,22 @@
 using namespace std;
 
 struct node {
-    UserInfo info;
+    UserInfo nodeUser;
     FriendsBST myTree;
-    node* link;
+    node* next;
 };
 
 class LinkedList {
 public:
-    int count;
     node* head;
     node* tail;
+    int count;
 public:
     LinkedList() {
         head = nullptr;
         tail = nullptr;
         count = 0;
     }
-
-
 
     bool isEmpty()const {
         return head == nullptr;
@@ -36,8 +34,8 @@ public:
     void print()const {
         node* current = head;
         while (current != nullptr) {
-            cout << current->info << " ";
-            current = current->link;
+            cout << current->nodeUser << " ";
+            current = current->next;
         }
     }
 
@@ -46,14 +44,14 @@ public:
     }
 
     UserInfo& front()const {
-        if (head != nullptr) { return head->info; }
+        if (head != nullptr) { return head->nodeUser; }
         else { cout<<"Users List is empty!\n"; }
         UserInfo nullObj;
         return nullObj;
     }
 
     UserInfo& back()const {
-        if (tail != nullptr) { return tail->info; }
+        if (tail != nullptr) { return tail->nodeUser; }
         else { cout<<"Users List is empty!\n"; }
         UserInfo nullObj;
         return nullObj;
@@ -69,21 +67,21 @@ public:
         else {
             found = false;
             trailCurrent = head;
-            current = head->link;
+            current = head->next;
         }
         while (current != NULL && !found)
         {
-            if (current->info.getName() != deleteItem.getName())
+            if (current->nodeUser.getName() != deleteItem.getName())
             {
                 trailCurrent = current;
-                current = current->link;
+                current = current->next;
             }
             else {
                 found = true;
             }
         }
         if (found == true) {
-            trailCurrent->link = current->link;
+            trailCurrent->next = current->next;
             count--;
             if (tail == current) {
                 tail = trailCurrent;
@@ -100,18 +98,18 @@ public:
         bool found = false;
         current = head;
         while (current != NULL && !found) {
-            if (current->info.getUsername() == username) {
+            if (current->nodeUser.getUsername() == username) {
                 found = true;
             }
             else {
-                current = current->link;
+                current = current->next;
             }
         }
         if(!found){
             UserInfo* temp= new UserInfo("","","");
             return *temp;
         }
-        return current->info;
+        return current->nodeUser;
     }
 
     bool searchUserInFriendList(string username,string target){
@@ -119,11 +117,11 @@ public:
         bool found = false;
         current = head;
         while (current != NULL && !found) {
-            if (current->info.getUsername() == username) {
+            if (current->nodeUser.getUsername() == username) {
                 found = true;
             }
             else {
-                current = current->link;
+                current = current->next;
             }
         }
         if(found){
@@ -143,26 +141,29 @@ public:
 
         current = head;
         while (current != NULL && !found) {
-            if (current->info.getUsername() == username) {
+            if (current->nodeUser.getUsername() == username) {
                 found = true;
             }
             else {
-                current = current->link;
+                current = current->next;
             }
         }
 
         newFriends=head;
         while (newFriends!=NULL && !found_target){
-            if(newFriends->info.getUsername()==target){
+            if(newFriends->nodeUser.getUsername() == target){
                 found_target=true;
             }else{
-                newFriends = newFriends->link;
+                newFriends = newFriends->next;
             }
         }
         if(found_target && found) {
-            current->myTree.Add(newFriends->info.getUsername(), &newFriends->info);
-            newFriends->myTree.Add(current->info.getUsername(),&current->info);
-            cout << "User added to friends list\n";
+            if(current->myTree.Add(newFriends->nodeUser.getUsername(), &newFriends->nodeUser) &&
+                    (newFriends->myTree.Add(current->nodeUser.getUsername(), &current->nodeUser)) ){
+                cout << "User added to friends list\n";
+            }else{
+                cout<<"User is already in your friend list!\n";
+            }
         }else {
             cout << "This user is not avalible\n";
         }
@@ -176,25 +177,25 @@ public:
         current = head;
 
         while (current != NULL && !found) {
-            if (current->info.getUsername() == username) {
+            if (current->nodeUser.getUsername() == username) {
                 found = true;
             }
             else {
-                current = current->link;
+                current = current->next;
             }
         }
 
         while (newFriends!=NULL && !found_target){
-            if(newFriends->info.getUsername()==target){
+            if(newFriends->nodeUser.getUsername() == target){
                 found_target=true;
             }else{
-                newFriends = newFriends->link;
+                newFriends = newFriends->next;
             }
         }
 
         if(found_target && found) {
-            current->myTree.Remove(newFriends->info.getUsername(),current->info);
-            newFriends->myTree.Remove(current->info.getUsername(),newFriends->info);
+            current->myTree.Remove(newFriends->nodeUser.getUsername(), current->nodeUser);
+            newFriends->myTree.Remove(current->nodeUser.getUsername(), newFriends->nodeUser);
             cout << "User removed from friends list\n";
         }else {
             cout << "This user is not in your friends list\n";
@@ -207,16 +208,16 @@ public:
         node* current=head;
         int counter=0;
         while (current!=NULL && counter!=5){
-            if(current->info.getUsername()==username){
-                current=current->link;
+            if(current->nodeUser.getUsername() == username){
+                current=current->next;
                 continue;
             }else if(current->myTree.Find(username)){
-                current=current->link;
+                current=current->next;
                 continue;
             }else{
                 cout<<"User "<<counter+1<<": \n";
-                current->info.printInfo();
-                current=current->link;
+                current->nodeUser.printInfo();
+                current=current->next;
                 counter++;
             }
         }
@@ -227,11 +228,11 @@ public:
         bool found = false;
         current = head;
         while (current != NULL && !found) {
-            if (current->info.getUsername() == username) {
+            if (current->nodeUser.getUsername() == username) {
                 found = true;
             }
             else {
-                current = current->link;
+                current = current->next;
             }
         }
 
@@ -239,22 +240,22 @@ public:
             if(current->myTree.isEmpty()){
                 cout<<"Could not find any friends!  :(\n";
             }else {
-                current->myTree.levelorder_newline();
+                current->myTree.printAVL_levelOrder();
             }
         }
     }
 
     void push_back(const UserInfo& newItem) {
         node* newNode = new node;
-        newNode->info = newItem;
-        newNode->link = NULL;
+        newNode->nodeUser = newItem;
+        newNode->next = NULL;
         if (head == NULL) {
             head = newNode;
             tail = newNode;
             count++;
         }
         else {
-            tail->link = newNode;
+            tail->next = newNode;
             tail = newNode;
             count++;
         }
@@ -274,7 +275,7 @@ public:
                     }
                     str[j]+=line2[i];
                 }
-                if(str[0]==newNode->info.getUsername()) {
+                if(str[0]==newNode->nodeUser.getUsername()) {
                     string USERS_INFO;
                     ifstream USERS_FILE ("../all-users.in");
                     if (USERS_FILE.is_open())
@@ -300,7 +301,7 @@ public:
                         cout << "Unable to open file";
                     }
 
-                }else if(str[1]==newNode->info.getUsername()){
+                }else if(str[1]==newNode->nodeUser.getUsername()){
                     string USERS_INFO;
                     ifstream USERS_FILE ("../all-users.in");
                     if (USERS_FILE.is_open())
@@ -338,8 +339,8 @@ public:
     void printList(){
         node* cur=head;
         while (cur!= nullptr){
-            cur->info.printInfo();
-            cur=cur->link;
+            cur->nodeUser.printInfo();
+            cur=cur->next;
         }
     }
 
@@ -347,7 +348,7 @@ public:
         node* temp;
         while (head != nullptr) {
             temp = head;
-            head = head->link;
+            head = head->next;
             delete temp;
         }
         tail = nullptr;

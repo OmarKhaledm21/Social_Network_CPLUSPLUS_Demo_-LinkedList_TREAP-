@@ -24,22 +24,22 @@ public:
 
     FriendsBST():root{nullptr}{}
 
-    int calheight(nodeBST *p){
-        if(p->left && p->right){
-            if (p->left->height < p->right->height)
-                return p->right->height + 1;
-            else return  p->left->height + 1;
+    int getHeight(nodeBST *n){
+        if(n->left && n->right){
+            if (n->left->height < n->right->height)
+                return n->right->height + 1;
+            else return n->left->height + 1;
         }
-        else if(p->left && p->right == NULL){
-            return p->left->height + 1;
+        else if(n->left && n->right == NULL){
+            return n->left->height + 1;
         }
-        else if(p->left ==NULL && p->right){
-            return p->right->height + 1;
+        else if(n->left == NULL && n->right){
+            return n->right->height + 1;
         }
         return 0;
     }
 
-    int bf(nodeBST *n){
+    int getBalanceFactor(nodeBST *n){
         if(n->left && n->right){
             return n->left->height - n->right->height;
         }
@@ -51,7 +51,7 @@ public:
         }
     }
 
-    nodeBST * llrotation(nodeBST *n){
+    nodeBST * LeftLeftRotation(nodeBST *n){
         nodeBST *p;
         nodeBST *tp;
         p = n;
@@ -63,9 +63,9 @@ public:
         return tp;
     }
 
-    nodeBST * rrrotation(struct nodeBST *n){
-        struct nodeBST *p;
-        struct nodeBST *tp;
+    nodeBST * RightRightRotation(struct nodeBST *n){
+        nodeBST *p;
+        nodeBST *tp;
         p = n;
         tp = p->right;
 
@@ -75,10 +75,10 @@ public:
         return tp;
     }
 
-    nodeBST * rlrotation(nodeBST *n){
-        struct nodeBST *p;
-        struct nodeBST *tp;
-        struct nodeBST *tp2;
+    nodeBST * RightLeftRotation(nodeBST *n){
+        nodeBST *p;
+        nodeBST *tp;
+        nodeBST *tp2;
         p = n;
         tp = p->right;
         tp2 =p->right->left;
@@ -91,7 +91,7 @@ public:
         return tp2;
     }
 
-    nodeBST * lrrotation(nodeBST *n){
+    nodeBST * LeftRightRotation(nodeBST *n){
         struct nodeBST *p;
         struct nodeBST *tp;
         struct nodeBST *tp2;
@@ -107,143 +107,151 @@ public:
         return tp2;
     }
 
-    void Add(string username,UserInfo* user){
-        root=insert(root,user,username);
+    bool Add(string username,UserInfo* user){
+        if(Find(username)){
+            return false;
+        }else {
+            root = insert(root, user, username);
+            return true;
+        }
     }
-    nodeBST* insert(nodeBST *r,UserInfo* user,string username){
+    nodeBST* insert(nodeBST *current, UserInfo* user, string username){
 
-        if(r==NULL){
+        if(current == NULL){
             nodeBST *n= new nodeBST;
             n->username = username;
             n->user=user;
-            r = n;
-            r->left = r->right = NULL;
-            r->height = 1;
-            return r;
+            current = n;
+            current->left = current->right = NULL;
+            current->height = 1;
+            return current;
         }
         else{
-            if(username < r->username)
-                r->left = insert(r->left, user,username);
+            if(username < current->username)
+                current->left = insert(current->left, user, username);
             else
-                r->right = insert(r->right, user,username);
+                current->right = insert(current->right, user, username);
         }
 
-        r->height = calheight(r);
+        current->height = getHeight(current);
 
-        if(bf(r)==2 && bf(r->left)==1){
-            r = llrotation(r);
+        if(getBalanceFactor(current) == 2 && getBalanceFactor(current->left) == 1){
+            current = LeftLeftRotation(current);
         }
-        else if(bf(r)==-2 && bf(r->right)==-1){
-            r = rrrotation(r);
+        else if(getBalanceFactor(current) == -2 && getBalanceFactor(current->right) == -1){
+            current = RightRightRotation(current);
         }
-        else if(bf(r)==-2 && bf(r->right)==1){
-            r = rlrotation(r);
+        else if(getBalanceFactor(current) == -2 && getBalanceFactor(current->right) == 1){
+            current = RightLeftRotation(current);
         }
-        else if(bf(r)==2 && bf(r->left)==-1){
-            r = lrrotation(r);
+        else if(getBalanceFactor(current) == 2 && getBalanceFactor(current->left) == -1){
+            current = LeftRightRotation(current);
         }
 
-        return r;
+        return current;
 
     }
 
-    nodeBST * deleteNode(nodeBST *p,UserInfo& user ,string username){
+    nodeBST * deleteNode(nodeBST *current, UserInfo& user , string username){
 
-        if(p->left == NULL && p->right == NULL){
-            if(p==this->root)
+        if(current->left == NULL && current->right == NULL){
+            if(current == this->root)
                 this->root = NULL;
-            delete p;
+            delete current;
             return NULL;
         }
 
         nodeBST *t;
         nodeBST *q;
-        if(p->username < username){
-            p->right = deleteNode(p->right, user,username);
+        if(current->username < username){
+            current->right = deleteNode(current->right, user, username);
         }
-        else if(p->username > username){
-            p->left = deleteNode(p->left, user,username);
+        else if(current->username > username){
+            current->left = deleteNode(current->left, user, username);
         }
         else{
-            if(p->left != NULL){
-                q = inpre(p->left);
-                p->user = q->user;
-                p->username=q->username;
-                p->left=deleteNode(p->left,*q->user,q->username);
+            if(current->left != NULL){
+                q = predecessor(current->left);
+                current->user = q->user;
+                current->username=q->username;
+                current->left=deleteNode(current->left, *q->user, q->username);
             }
             else{
-                q = insuc(p->right);
-                p->username = q->username;
-                p->user = q->user;
-                p->right = deleteNode(p->right,*q->user,q->username);
+                q = successor(current->right);
+                current->username = q->username;
+                current->user = q->user;
+                current->right = deleteNode(current->right, *q->user, q->username);
             }
         }
 
-        if(bf(p)==2 && bf(p->left)==1){ p = llrotation(p); }
-        else if(bf(p)==2 && bf(p->left)==-1){ p = lrrotation(p); }
-        else if(bf(p)==2 && bf(p->left)==0){ p = llrotation(p); }
-        else if(bf(p)==-2 && bf(p->right)==-1){ p = rrrotation(p); }
-        else if(bf(p)==-2 && bf(p->right)==1){ p = rlrotation(p); }
-        else if(bf(p)==-2 && bf(p->right)==0){ p = llrotation(p); }
-        return p;
+        if(getBalanceFactor(current) == 2 && getBalanceFactor(current->left) == 1){
+            current = LeftLeftRotation(current);
+        }else if(getBalanceFactor(current) == 2 && getBalanceFactor(current->left) == -1){
+            current = LeftRightRotation(current);
+        }else if(getBalanceFactor(current) == 2 && getBalanceFactor(current->left) == 0){
+            current = LeftLeftRotation(current);
+        }else if(getBalanceFactor(current) == -2 && getBalanceFactor(current->right) == -1){
+            current = RightRightRotation(current);
+        }else if(getBalanceFactor(current) == -2 && getBalanceFactor(current->right) == 1){
+            current = RightLeftRotation(current);
+        }else if(getBalanceFactor(current) == -2 && getBalanceFactor(current->right) == 0){
+            current = LeftLeftRotation(current);
+        }
+        return current;
     }
 
-    void levelorder_newline(){
+    void printAVL_levelOrder(){
         if (this->root == NULL){
             cout<<"\n"<<"Empty tree"<<"\n";
             return;
         }
-        levelorder_newline(this->root);
+        levelorder(this->root);
     }
 
-    void levelorder_newline(nodeBST *v){
+    void levelorder(nodeBST *root){
         queue <nodeBST *> q;
-        nodeBST *cur;
-        q.push(v);
+        nodeBST *current;
+        q.push(root);
         q.push(NULL);
 
         while(!q.empty()){
-            cur = q.front();
+            current = q.front();
             q.pop();
-            if(cur == NULL && q.size()!=0){
+            if(current == NULL && q.size() != 0){
                 cout<<"\n";
-
                 q.push(NULL);
                 continue;
             }
-            if(cur!=NULL){
-                cout<<" "<<*(cur->user);
-
-                if (cur->left!=NULL){
-                    q.push(cur->left);
+            if(current != NULL){
+                cout<<" "<<*(current->user);
+                if (current->left != NULL){
+                    q.push(current->left);
                 }
-                if (cur->right!=NULL){
-                    q.push(cur->right);
+                if (current->right != NULL){
+                    q.push(current->right);
                 }
             }
-
-
         }
     }
 
-    nodeBST* inpre(struct nodeBST* p){
-        while(p->right!=NULL)
-            p = p->right;
-        return p;
+    nodeBST* predecessor(nodeBST* myNode){
+        while(myNode->right != NULL) {
+            myNode = myNode->right;
+        }
+        return myNode;
     }
 
-    struct nodeBST* insuc(struct nodeBST* p){
-        while(p->left!=NULL)
-            p = p->left;
-        return p;
+    nodeBST* successor(nodeBST* myNode){
+        while(myNode->left != NULL) {
+            myNode = myNode->left;
+        }
+        return myNode;
     }
 
     void Remove(string username,UserInfo& user){
         root=deleteNode(root,user,username);
     }
-
-
-    //READY TO GO
+    
     bool isEmpty(){
         return (root== nullptr);
     }
@@ -263,12 +271,12 @@ public:
         return false;
     }
 
-    void inorder(nodeBST* p){
-        if (p != NULL)
+    void inorder(nodeBST* traverser){
+        if (traverser != NULL)
         {
-            inorder(p->left);
-            cout << *(p->user)<< " ";
-            inorder(p->right);
+            inorder(traverser->left);
+            cout << *(traverser->user) << " ";
+            inorder(traverser->right);
         }
     }
 
@@ -276,13 +284,13 @@ public:
         inorder(root);
     }
 
-    void clear_tree(nodeBST* node){
-        if (node != NULL)
+    void clear_tree(nodeBST* traverser){
+        if (traverser != NULL)
         {
-            clear_tree(node->left);
-            clear_tree(node->right);
-            delete node;
-            node = NULL;
+            clear_tree(traverser->left);
+            clear_tree(traverser->right);
+            delete traverser;
+            traverser = NULL;
         }
     }
 
@@ -290,6 +298,5 @@ public:
         clear_tree(root);
     }
 };
-
 
 #endif //SOCIAL_NETWORK_FRIENDSBST_H
