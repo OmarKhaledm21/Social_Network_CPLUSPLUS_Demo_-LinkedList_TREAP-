@@ -52,59 +52,59 @@ public:
     }
 
     nodeBST * LeftLeftRotation(nodeBST *n){
-        nodeBST *p;
-        nodeBST *tp;
-        p = n;
-        tp = p->left;
+        nodeBST *parent;
+        nodeBST *leftChild;
+        parent = n;
+        leftChild = parent->left;
 
-        p->left = tp->right;
-        tp->right = p;
+        parent->left = leftChild->right;
+        leftChild->right = parent;
 
-        return tp;
+        return leftChild;
     }
 
     nodeBST * RightRightRotation(struct nodeBST *n){
-        nodeBST *p;
-        nodeBST *tp;
-        p = n;
-        tp = p->right;
+        nodeBST *parent;
+        nodeBST *rightChild;
+        parent = n;
+        rightChild = parent->right;
 
-        p->right = tp->left;
-        tp->left = p;
+        parent->right = rightChild->left;
+        rightChild->left = parent;
 
-        return tp;
+        return rightChild;
     }
 
     nodeBST * RightLeftRotation(nodeBST *n){
-        nodeBST *p;
-        nodeBST *tp;
-        nodeBST *tp2;
-        p = n;
-        tp = p->right;
-        tp2 =p->right->left;
+        nodeBST *parent;
+        nodeBST *rightChild;
+        nodeBST *rightLeftChild;
+        parent = n;
+        rightChild = parent->right;
+        rightLeftChild =parent->right->left;
 
-        p -> right = tp2->left;
-        tp ->left = tp2->right;
-        tp2 ->left = p;
-        tp2->right = tp;
+        parent -> right = rightLeftChild->left;
+        rightChild ->left = rightLeftChild->right;
+        rightLeftChild ->left = parent;
+        rightLeftChild->right = rightChild;
 
-        return tp2;
+        return rightLeftChild;
     }
 
     nodeBST * LeftRightRotation(nodeBST *n){
-        struct nodeBST *p;
-        struct nodeBST *tp;
-        struct nodeBST *tp2;
-        p = n;
-        tp = p->left;
-        tp2 =p->left->right;
+        struct nodeBST *parent;
+        struct nodeBST *leftChild;
+        struct nodeBST *leftRightChild;
+        parent = n;
+        leftChild = parent->left;
+        leftRightChild =parent->left->right;
 
-        p -> left = tp2->right;
-        tp ->right = tp2->left;
-        tp2 ->right = p;
-        tp2->left = tp;
+        parent -> left = leftRightChild->right;
+        leftChild ->right = leftRightChild->left;
+        leftRightChild ->right = parent;
+        leftRightChild->left = leftChild;
 
-        return tp2;
+        return leftRightChild;
     }
 
     bool Add(string username,UserInfo* user){
@@ -147,9 +147,7 @@ public:
         else if(getBalanceFactor(current) == 2 && getBalanceFactor(current->left) == -1){
             current = LeftRightRotation(current);
         }
-
         return current;
-
     }
 
     nodeBST * deleteNode(nodeBST *current, UserInfo& user , string username){
