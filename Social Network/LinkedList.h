@@ -240,7 +240,7 @@ public:
             if(current->myTree.isEmpty()){
                 cout<<"Could not find any friends!  :(\n";
             }else {
-                current->myTree.printAVL_levelOrder();
+                current->myTree.printInOrder();
             }
         }
     }
